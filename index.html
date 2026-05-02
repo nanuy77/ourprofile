@@ -1,499 +1,476 @@
-
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@500;600;700&display=swap');
 
 *{margin:0;padding:0;box-sizing:border-box;}
 
-#root{
+body,#root{
   font-family:'Inter',sans-serif;
-  background:#0c0c0e;
-  min-height:700px;
-  color:#e8e8e8;
-  position:relative;
-  overflow:hidden;
-  border-radius:16px;
+  background:#0f0f10;
+  min-height:100vh;
+  color:#e2e2e4;
 }
 
-#noise{
-  position:absolute;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:1;opacity:0.4;
+#page{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
-#top-bar{
+/* NAV */
+#nav{
   display:flex;align-items:center;justify-content:space-between;
-  padding:16px 20px;
-  border-bottom:0.5px solid rgba(255,255,255,0.06);
-  position:relative;z-index:10;
+  padding:0 32px;
+  height:52px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  position:sticky;top:0;z-index:50;
+  background:rgba(15,15,16,0.9);
+  backdrop-filter:blur(16px);
 }
 
-#top-left{
+#nav-left{
   display:flex;align-items:center;gap:8px;
 }
 
-.dot{width:10px;height:10px;border-radius:50%;}
-.dot-red{background:#ff5f57;}
-.dot-yellow{background:#ffbd2e;}
-.dot-green{background:#28c840;}
+.wdot{width:11px;height:11px;border-radius:50%;}
+.wd-r{background:#ff5f57;}.wd-y{background:#ffbd2e;}.wd-g{background:#28c840;}
 
-#top-center{
-  position:absolute;left:50%;transform:translateX(-50%);
-  font-size:11px;font-weight:500;
-  color:rgba(255,255,255,0.3);
-  letter-spacing:0.8px;
-  font-family:'Inter',sans-serif;
+#nav-title{
+  font-size:13px;font-weight:500;
+  color:rgba(255,255,255,0.25);
+  letter-spacing:0.6px;
+  margin-left:16px;
 }
 
-#switcher-area{
-  position:relative;
+#nav-right{
+  display:flex;align-items:center;gap:12px;
 }
 
-#partner-pill{
-  display:flex;align-items:center;gap:8px;
-  padding:5px 10px 5px 5px;
-  border-radius:50px;
-  border:0.5px solid rgba(255,255,255,0.1);
+#switch-pill{
+  display:flex;align-items:center;gap:7px;
+  padding:5px 12px 5px 6px;
+  border-radius:100px;
+  border:1px solid rgba(255,255,255,0.09);
   background:rgba(255,255,255,0.04);
   cursor:pointer;
-  transition:all 0.25s ease;
+  transition:background 0.2s,border-color 0.2s;
   user-select:none;
 }
+#switch-pill:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.15);}
 
-#partner-pill:hover{
-  background:rgba(255,255,255,0.08);
-  border-color:rgba(255,255,255,0.18);
-}
-
-#partner-avatar-small{
-  width:28px;height:28px;border-radius:50%;
-  background:#1e1e24;
-  border:1px solid rgba(255,255,255,0.12);
-  overflow:hidden;
+#pill-avatar{
+  width:24px;height:24px;border-radius:50%;
+  background:#1c1c1f;
+  border:1px solid rgba(255,255,255,0.1);
   display:flex;align-items:center;justify-content:center;
-  font-size:14px;
-  transition:all 0.3s ease;
+  font-size:13px;
+  overflow:hidden;flex-shrink:0;
 }
 
-#partner-name-small{
-  font-size:12px;font-weight:500;
-  color:rgba(255,255,255,0.6);
-  letter-spacing:0.2px;
+#pill-name{font-size:12px;font-weight:500;color:rgba(255,255,255,0.5);}
+
+#pill-icon{
+  width:13px;height:13px;
+  color:rgba(255,255,255,0.28);
+  transition:transform 0.25s;
+  flex-shrink:0;
 }
+#switch-pill:hover #pill-icon{transform:translateX(2px);}
 
-#switch-arrow{
-  width:14px;height:14px;opacity:0.4;
-  transition:transform 0.3s ease;
-}
-
-#partner-pill:hover #switch-arrow{transform:rotate(90deg);opacity:0.8;}
-
+/* MAIN LAYOUT */
 #main{
-  display:flex;flex-direction:column;align-items:center;
-  padding:48px 24px 36px;
-  position:relative;z-index:5;
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 24px;
+}
+
+#card{
+  width:100%;
+  max-width:420px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   gap:0;
 }
 
-#avatar-wrap{
-  position:relative;margin-bottom:20px;
+/* AVATAR */
+#av-wrap{
+  position:relative;
+  margin-bottom:24px;
 }
 
-#avatar-frame{
-  width:88px;height:88px;border-radius:50%;
-  background:#1a1a22;
-  border:1px solid rgba(255,255,255,0.1);
+#av-outer{
+  width:96px;height:96px;
+  border-radius:50%;
+  padding:2px;
+  transition:background 0.6s ease;
+  background:rgba(255,255,255,0.07);
+}
+#av-outer.ko{background:linear-gradient(135deg,rgba(138,180,248,0.4),rgba(97,131,237,0.2));}
+#av-outer.no{background:linear-gradient(135deg,rgba(248,163,192,0.4),rgba(220,120,170,0.2));}
+
+#av-inner{
+  width:100%;height:100%;
+  border-radius:50%;
+  background:#18181b;
   display:flex;align-items:center;justify-content:center;
-  font-size:38px;
-  position:relative;
-  transition:border-color 0.5s ease;
+  font-size:40px;
   overflow:hidden;
 }
 
-#avatar-frame.kei-frame{border-color:rgba(110,180,255,0.3);}
-#avatar-frame.nash-frame{border-color:rgba(255,160,200,0.3);}
-
-#avatar-ring-outer{
-  position:absolute;inset:-4px;
-  border-radius:50%;
-  border:0.5px solid transparent;
-  transition:border-color 0.5s ease;
+#av-dot{
+  position:absolute;bottom:4px;right:4px;
+  width:13px;height:13px;border-radius:50%;
+  background:#34d058;
+  border:2.5px solid #0f0f10;
 }
 
-#avatar-ring-outer.kei-ring{border-color:rgba(110,180,255,0.2);}
-#avatar-ring-outer.nash-ring{border-color:rgba(255,160,200,0.2);}
-
-#avatar-status{
-  position:absolute;bottom:3px;right:3px;
-  width:12px;height:12px;border-radius:50%;
-  background:#22c55e;
-  border:2px solid #0c0c0e;
+/* PROFILE TEXT */
+#pinfo{
+  text-align:center;
+  margin-bottom:32px;
 }
 
-#profile-info{text-align:center;margin-bottom:28px;}
-
-#profile-name{
+#pname{
   font-family:'Syne',sans-serif;
-  font-size:26px;font-weight:700;
-  color:#f0f0f2;
-  letter-spacing:-0.3px;
-  margin-bottom:4px;
-  transition:all 0.4s ease;
+  font-size:28px;font-weight:700;
+  color:#f5f5f6;
+  letter-spacing:-0.5px;
+  line-height:1.15;
+  transition:opacity 0.25s;
 }
 
-#profile-handle{
+#phandle{
   font-size:13px;font-weight:400;
-  color:rgba(255,255,255,0.38);
-  letter-spacing:0.3px;
-  transition:all 0.4s ease;
+  color:rgba(255,255,255,0.32);
+  margin-top:5px;
+  letter-spacing:0.2px;
+  transition:opacity 0.25s;
 }
 
-#couple-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  margin-top:10px;
-  padding:4px 12px;
-  border-radius:50px;
+#pbadge{
+  display:inline-flex;align-items:center;gap:5px;
+  margin-top:12px;
+  padding:4px 13px;
+  border-radius:100px;
   background:rgba(255,255,255,0.04);
-  border:0.5px solid rgba(255,255,255,0.08);
-  font-size:11px;
-  color:rgba(255,255,255,0.35);
-  letter-spacing:0.5px;
-  font-weight:500;
+  border:1px solid rgba(255,255,255,0.07);
+  font-size:11px;letter-spacing:0.5px;font-weight:500;
+  color:rgba(255,255,255,0.28);
+  transition:border-color 0.5s,color 0.5s;
+}
+#pbadge.ko{border-color:rgba(138,180,248,0.2);color:rgba(138,180,248,0.6);}
+#pbadge.no{border-color:rgba(248,163,192,0.2);color:rgba(248,163,192,0.6);}
+
+#heart-ico{display:inline-block;animation:hb 1.9s ease-in-out infinite;}
+@keyframes hb{0%,100%{transform:scale(1)}45%{transform:scale(1.4)}}
+
+/* LINKS */
+#links{
+  width:100%;
+  display:flex;flex-direction:column;
+  gap:6px;
 }
 
-#couple-badge-heart{
-  font-size:11px;
-  display:inline-block;
-  animation:hb 1.8s ease-in-out infinite;
-}
-@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
-
-#social-links{
-  width:100%;max-width:320px;
-  display:flex;flex-direction:column;gap:8px;
-}
-
-.slink{
+.lk{
   display:flex;align-items:center;gap:12px;
-  padding:13px 16px;
+  padding:12px 14px;
   border-radius:12px;
-  border:0.5px solid rgba(255,255,255,0.07);
-  background:rgba(255,255,255,0.03);
-  text-decoration:none;
+  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.025);
   cursor:pointer;
-  transition:all 0.2s ease;
+  text-decoration:none;
+  transition:background 0.18s,border-color 0.18s,transform 0.15s;
   position:relative;overflow:hidden;
 }
-
-.slink:hover{
-  background:rgba(255,255,255,0.07);
-  border-color:rgba(255,255,255,0.12);
+.lk:hover{
+  background:rgba(255,255,255,0.055);
+  border-color:rgba(255,255,255,0.11);
   transform:translateX(3px);
 }
+.lk:active{transform:translateX(1px) scale(0.99);}
 
-.slink:active{transform:translateX(1px) scale(0.99);}
-
-.slink-icon{
-  width:32px;height:32px;border-radius:8px;
+.lk-ico{
+  width:34px;height:34px;border-radius:9px;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;
 }
+.lk-ico svg{width:16px;height:16px;display:block;}
 
-.slink-icon svg{width:16px;height:16px;}
+.ico-d{background:rgba(88,101,242,0.12);}
+.ico-t{background:rgba(240,240,255,0.06);}
+.ico-s{background:rgba(255,149,0,0.1);}
+.ico-b{background:rgba(52,211,88,0.1);}
 
-.icon-discord{background:rgba(88,101,242,0.15);}
-.icon-tiktok{background:rgba(255,255,255,0.07);}
-.icon-saweria{background:rgba(255,140,0,0.12);}
-.icon-socobuz{background:rgba(50,200,120,0.12);}
-
-.slink-text{flex:1;}
-.slink-label{font-size:13px;font-weight:500;color:#d0d0d8;}
-.slink-sub{font-size:11px;color:rgba(255,255,255,0.28);margin-top:1px;transition:color 0.4s ease;}
-
-.slink-sub.kei-sub-color{color:rgba(110,180,255,0.5);}
-.slink-sub.nash-sub-color{color:rgba(255,160,200,0.5);}
-
-.slink-arrow{
-  opacity:0;
-  transform:translateX(-4px);
-  transition:all 0.2s ease;
-  color:rgba(255,255,255,0.3);
-  font-size:13px;
+.lk-body{flex:1;min-width:0;}
+.lk-lbl{font-size:13px;font-weight:500;color:#d4d4d8;line-height:1;}
+.lk-sub{
+  font-size:11px;color:rgba(255,255,255,0.28);
+  margin-top:3px;letter-spacing:0.2px;
+  transition:color 0.5s;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
+.lk-sub.ko{color:rgba(138,180,248,0.45);}
+.lk-sub.no{color:rgba(248,163,192,0.45);}
 
-.slink:hover .slink-arrow{opacity:1;transform:translateX(0);}
-
-#bottom-bar{
-  margin-top:32px;
-  padding-top:20px;
-  border-top:0.5px solid rgba(255,255,255,0.05);
-  width:100%;max-width:320px;
-  display:flex;align-items:center;justify-content:center;
-  gap:6px;
-  font-size:11px;
+.lk-arr{
   color:rgba(255,255,255,0.18);
-  letter-spacing:0.5px;
+  font-size:16px;line-height:1;
+  opacity:0;transform:translateX(-3px);
+  transition:opacity 0.15s,transform 0.15s;
+  flex-shrink:0;
 }
+.lk:hover .lk-arr{opacity:1;transform:translateX(0);}
 
-#bb-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.15);}
-
-.fade-out{animation:fo 0.22s ease forwards;}
-.fade-in{animation:fi 0.35s ease forwards;}
-@keyframes fo{to{opacity:0;transform:translateY(6px)}}
-@keyframes fi{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-
-#toast{
-  position:absolute;
-  bottom:20px;left:50%;
-  transform:translateX(-50%) translateY(20px);
-  background:rgba(30,30,36,0.95);
-  border:0.5px solid rgba(255,255,255,0.1);
-  color:rgba(255,255,255,0.7);
-  padding:8px 16px;
-  border-radius:50px;
-  font-size:11px;font-weight:500;
-  opacity:0;
-  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  pointer-events:none;
-  white-space:nowrap;
-  z-index:20;
-  letter-spacing:0.3px;
+/* FOOTER */
+#footer{
+  margin-top:28px;
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;color:rgba(255,255,255,0.16);
+  letter-spacing:0.4px;
 }
+.fdot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.13);}
 
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-
-#bg-accent{
-  position:absolute;
-  width:280px;height:280px;
+/* AMBIENT */
+#amb{
+  position:fixed;
+  width:500px;height:500px;
   border-radius:50%;
-  top:-100px;left:50%;
-  transform:translateX(-50%);
-  transition:background 0.8s ease,opacity 0.8s ease;
-  filter:blur(80px);
-  opacity:0.08;
+  top:50%;left:50%;
+  transform:translate(-50%,-60%);
+  filter:blur(120px);
+  opacity:0.055;
   pointer-events:none;
+  transition:background 0.8s ease;
   z-index:0;
 }
+#amb.ko{background:#8ab4f8;}
+#amb.no{background:#f8a3c0;}
 
-#bg-accent.kei-accent{background:#6eb4ff;}
-#bg-accent.nash-accent{background:#ffa0c8;}
+/* TOAST */
+#toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:#1c1c1f;
+  border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.6);
+  padding:7px 16px;border-radius:100px;
+  font-size:11px;font-weight:500;letter-spacing:0.3px;
+  opacity:0;pointer-events:none;white-space:nowrap;
+  transition:all 0.28s cubic-bezier(0.34,1.5,0.64,1);
+  z-index:99;
+}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* Transition helpers */
+.fade-out-up{animation:fou 0.2s ease forwards;}
+.fade-in-down{animation:fid 0.3s ease forwards;}
+@keyframes fou{to{opacity:0;transform:translateY(8px)}}
+@keyframes fid{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  #nav{padding:0 18px;}
+  #nav-title{display:none;}
+  #main{padding:28px 16px;}
+  #av-outer{width:84px;height:84px;}
+  #av-inner{font-size:34px;}
+  #pname{font-size:24px;}
+  #card{max-width:100%;}
+}
+@media(min-width:900px){
+  #card{max-width:380px;}
+}
 </style>
 
-<div id="root">
-  <div id="noise"></div>
-  <div id="bg-accent" class="kei-accent"></div>
+<div id="page">
+  <div id="amb" class="ko"></div>
 
-  <div id="top-bar">
-    <div id="top-left">
-      <div class="dot dot-red"></div>
-      <div class="dot dot-yellow"></div>
-      <div class="dot dot-green"></div>
+  <nav id="nav">
+    <div id="nav-left">
+      <div class="wdot wd-r"></div>
+      <div class="wdot wd-y"></div>
+      <div class="wdot wd-g"></div>
+      <span id="nav-title">kei.nash</span>
     </div>
-    <div id="top-center">kei.nash ✦</div>
-    <div id="switcher-area">
-      <div id="partner-pill" onclick="switchProfile()">
-        <div id="partner-avatar-small">🌸</div>
-        <span id="partner-name-small">Nash</span>
-        <svg id="switch-arrow" viewBox="0 0 16 16" fill="none">
+    <div id="nav-right">
+      <div id="switch-pill" onclick="doSwitch()">
+        <div id="pill-avatar">🌸</div>
+        <span id="pill-name">Nash</span>
+        <svg id="pill-icon" viewBox="0 0 16 16" fill="none">
           <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
     </div>
-  </div>
+  </nav>
 
   <div id="main">
-    <div id="avatar-wrap">
-      <div id="avatar-ring-outer" class="kei-ring"></div>
-      <div id="avatar-frame" class="kei-frame">
-        <span id="avatar-emoji" style="font-size:38px;">🧊</span>
+    <div id="card">
+      <div id="av-wrap">
+        <div id="av-outer" class="ko">
+          <div id="av-inner">
+            <span id="av-emoji">🧊</span>
+          </div>
+        </div>
+        <div id="av-dot"></div>
       </div>
-      <div id="avatar-status"></div>
-    </div>
 
-    <div id="profile-info">
-      <div id="profile-name">Kei</div>
-      <div id="profile-handle">@kei_tiktok</div>
-      <div id="couple-badge">
-        <span id="couple-badge-heart">♥</span>
-        <span id="badge-text">Kei & Nash</span>
+      <div id="pinfo">
+        <div id="pname">Kei</div>
+        <div id="phandle">@kei_tiktok</div>
+        <div id="pbadge" class="ko">
+          <span id="heart-ico">♥</span>
+          <span id="badge-txt">Kei & Nash</span>
+        </div>
       </div>
-    </div>
 
-    <div id="social-links">
-      <a class="slink" id="link-discord" onclick="handleLink(event,'Discord')">
-        <div class="slink-icon icon-discord">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.114 18.1.132 18.11a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" fill="#5865F2"/>
-          </svg>
-        </div>
-        <div class="slink-text">
-          <div class="slink-label">Discord</div>
-          <div class="slink-sub kei-sub-color" id="discord-sub">@kei</div>
-        </div>
-        <span class="slink-arrow">›</span>
-      </a>
+      <div id="links">
+        <a class="lk" onclick="openLink(event,'Discord')">
+          <div class="lk-ico ico-d">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.1.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" fill="#5865F2"/>
+            </svg>
+          </div>
+          <div class="lk-body">
+            <div class="lk-lbl">Discord</div>
+            <div class="lk-sub ko" id="sub-discord">@kei</div>
+          </div>
+          <span class="lk-arr">›</span>
+        </a>
 
-      <a class="slink" id="link-tiktok" onclick="handleLink(event,'TikTok')">
-        <div class="slink-icon icon-tiktok">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z" fill="#e8e8e8"/>
-          </svg>
-        </div>
-        <div class="slink-text">
-          <div class="slink-label">TikTok</div>
-          <div class="slink-sub kei-sub-color" id="tiktok-sub">@kei_tiktok</div>
-        </div>
-        <span class="slink-arrow">›</span>
-      </a>
+        <a class="lk" onclick="openLink(event,'TikTok')">
+          <div class="lk-ico ico-t">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-6.34 6.33 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z" fill="#e8e8e8"/>
+            </svg>
+          </div>
+          <div class="lk-body">
+            <div class="lk-lbl">TikTok</div>
+            <div class="lk-sub ko" id="sub-tiktok">@kei_tiktok</div>
+          </div>
+          <span class="lk-arr">›</span>
+        </a>
 
-      <a class="slink" id="link-saweria" onclick="handleLink(event,'Saweria')">
-        <div class="slink-icon icon-saweria">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 3C7.58 3 4 6.58 4 11c0 2.82 1.44 5.31 3.63 6.78V20h8.74v-2.22A8.02 8.02 0 0 0 20 11c0-4.42-3.58-8-8-8zm1 13.5V14h-2v2.5c-2.12-.76-3.62-2.78-3.62-5.17a5.62 5.62 0 0 1 11.24 0c0 2.39-1.5 4.41-3.62 5.17z" fill="#ff8c00"/>
-          </svg>
-        </div>
-        <div class="slink-text">
-          <div class="slink-label">Saweria</div>
-          <div class="slink-sub kei-sub-color" id="saweria-sub">Dukung Kei</div>
-        </div>
-        <span class="slink-arrow">›</span>
-      </a>
+        <a class="lk" onclick="openLink(event,'Saweria')">
+          <div class="lk-ico ico-s">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C9.24 2 7 4.24 7 7c0 2.08 1.19 3.88 2.93 4.78L10 20h4l.07-8.22A5 5 0 0 0 17 7c0-2.76-2.24-5-5-5zm1 9.4V13h-2v-1.6A3 3 0 0 1 9 7a3 3 0 0 1 6 0 3 3 0 0 1-2 2.83V11.4z" fill="#ff9500"/>
+            </svg>
+          </div>
+          <div class="lk-body">
+            <div class="lk-lbl">Saweria</div>
+            <div class="lk-sub ko" id="sub-saweria">Dukung Kei</div>
+          </div>
+          <span class="lk-arr">›</span>
+        </a>
 
-      <a class="slink" id="link-socobuz" onclick="handleLink(event,'Socobuz')">
-        <div class="slink-icon icon-socobuz">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="9" stroke="#32c878" stroke-width="1.5"/>
-            <path d="M8.5 12.5C8.5 12.5 9.5 14.5 12 14.5C14.5 14.5 15.5 12.5 15.5 12.5" stroke="#32c878" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="9.5" cy="10" r="1" fill="#32c878"/>
-            <circle cx="14.5" cy="10" r="1" fill="#32c878"/>
-          </svg>
-        </div>
-        <div class="slink-text">
-          <div class="slink-label">Socobuz</div>
-          <div class="slink-sub kei-sub-color" id="socobuz-sub">Kei's socobuz</div>
-        </div>
-        <span class="slink-arrow">›</span>
-      </a>
-    </div>
+        <a class="lk" onclick="openLink(event,'Socobuz')">
+          <div class="lk-ico ico-b">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="8.5" stroke="#34d358" stroke-width="1.5"/>
+              <circle cx="9" cy="10.5" r="1.1" fill="#34d358"/>
+              <circle cx="15" cy="10.5" r="1.1" fill="#34d358"/>
+              <path d="M8.5 14c1 1.5 5.5 1.5 7 0" stroke="#34d358" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="lk-body">
+            <div class="lk-lbl">Socobuz</div>
+            <div class="lk-sub ko" id="sub-socobuz">Kei's socobuz</div>
+          </div>
+          <span class="lk-arr">›</span>
+        </a>
+      </div>
 
-    <div id="bottom-bar">
-      <span id="bb-name">Kei</span>
-      <div id="bb-dot"></div>
-      <span>with Nash</span>
-      <div id="bb-dot"></div>
-      <span>always</span>
+      <div id="footer">
+        <span id="fn">Kei</span>
+        <div class="fdot"></div>
+        <span>with Nash</span>
+        <div class="fdot"></div>
+        <span>always ♥</span>
+      </div>
     </div>
   </div>
-
-  <div id="toast"></div>
 </div>
 
+<div id="toast"></div>
+
 <script>
-const data={
-  kei:{
-    emoji:'🧊',
-    name:'Kei',
-    handle:'@kei_tiktok',
-    frame:'kei-frame',ring:'kei-ring',accent:'kei-accent',
-    subClass:'kei-sub-color',
+const P={
+  kei:{emoji:'🧊',name:'Kei',handle:'@kei_tiktok',cl:'ko',
     discord:'@kei',tiktok:'@kei_tiktok',saweria:'Dukung Kei',socobuz:"Kei's socobuz",
-    partner:{name:'Nash',emoji:'🌸'},
-    bbWith:'Nash',
-  },
-  nash:{
-    emoji:'🌸',
-    name:'Nash',
-    handle:'@nash_tiktok',
-    frame:'nash-frame',ring:'nash-ring',accent:'nash-accent',
-    subClass:'nash-sub-color',
+    partner:{name:'Nash',emoji:'🌸'},footerWith:'Nash'},
+  nash:{emoji:'🌸',name:'Nash',handle:'@nash_tiktok',cl:'no',
     discord:'@nash',tiktok:'@nash_tiktok',saweria:'Dukung Nash',socobuz:"Nash's socobuz",
-    partner:{name:'Kei',emoji:'🧊'},
-    bbWith:'Kei',
-  }
+    partner:{name:'Kei',emoji:'🧊'},footerWith:'Kei'}
 };
 
-let current='kei';
+let cur='kei';
+let busy=false;
 
-function switchProfile(){
-  current = current==='kei'?'nash':'kei';
-  applyProfile(current);
-}
+function doSwitch(){
+  if(busy)return;
+  busy=true;
+  cur=cur==='kei'?'nash':'kei';
+  const p=P[cur],q=P[cur==='kei'?'nash':'kei'];
 
-function applyProfile(who){
-  const p=data[who],q=data[who==='kei'?'nash':'kei'];
-
-  const els={
-    name:document.getElementById('profile-name'),
-    handle:document.getElementById('profile-handle'),
-    avatar:document.getElementById('avatar-emoji'),
-    frame:document.getElementById('avatar-frame'),
-    ring:document.getElementById('avatar-ring-outer'),
-    accent:document.getElementById('bg-accent'),
-    partnerAvatar:document.getElementById('partner-avatar-small'),
-    partnerName:document.getElementById('partner-name-small'),
-    badgeText:document.getElementById('badge-text'),
-    discordSub:document.getElementById('discord-sub'),
-    tiktokSub:document.getElementById('tiktok-sub'),
-    saweriaSub:document.getElementById('saweria-sub'),
-    socobuzSub:document.getElementById('socobuz-sub'),
-    bbName:document.getElementById('bb-name'),
-  };
-
-  els.name.classList.add('fade-out');
-  els.handle.classList.add('fade-out');
+  const toAnim=['pname','phandle'];
+  toAnim.forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.add('fade-out-up');
+  });
 
   setTimeout(()=>{
-    els.avatar.textContent=p.emoji;
-    els.name.textContent=p.name;
-    els.handle.textContent=p.handle;
-    els.frame.className='slink-icon '+p.frame;
-    els.frame.id='avatar-frame';
-    document.getElementById('avatar-frame').className=p.frame;
-    els.ring.className=p.ring;
-    els.accent.className=p.accent;
-    els.partnerAvatar.textContent=q.emoji;
-    els.partnerName.textContent=q.name;
-    els.badgeText.textContent='Kei & Nash';
-    els.discordSub.textContent=p.discord;
-    els.tiktokSub.textContent=p.tiktok;
-    els.saweriaSub.textContent=p.saweria;
-    els.socobuzSub.textContent=p.socobuz;
-    els.bbName.textContent=p.name;
+    document.getElementById('av-emoji').textContent=p.emoji;
+    document.getElementById('av-outer').className=p.cl;
+    document.getElementById('amb').className=p.cl;
+    document.getElementById('pbadge').className=p.cl;
 
-    document.querySelectorAll('.slink-sub').forEach(el=>{
-      el.className='slink-sub '+p.subClass;
+    document.getElementById('pname').textContent=p.name;
+    document.getElementById('phandle').textContent=p.handle;
+    document.getElementById('fn').textContent=p.name;
+
+    document.getElementById('pill-avatar').textContent=q.emoji;
+    document.getElementById('pill-name').textContent=q.name;
+
+    document.getElementById('sub-discord').textContent=p.discord;
+    document.getElementById('sub-tiktok').textContent=p.tiktok;
+    document.getElementById('sub-saweria').textContent=p.saweria;
+    document.getElementById('sub-socobuz').textContent=p.socobuz;
+
+    document.querySelectorAll('.lk-sub').forEach(el=>{
+      el.className='lk-sub '+p.cl;
     });
 
-    els.name.classList.remove('fade-out');
-    els.name.classList.add('fade-in');
-    els.handle.classList.remove('fade-out');
-    els.handle.classList.add('fade-in');
-    setTimeout(()=>{
-      els.name.classList.remove('fade-in');
-      els.handle.classList.remove('fade-in');
-    },400);
+    toAnim.forEach(id=>{
+      const el=document.getElementById(id);
+      el.classList.remove('fade-out-up');
+      el.classList.add('fade-in-down');
+      setTimeout(()=>el.classList.remove('fade-in-down'),350);
+    });
 
-    toast('Switched to '+p.name);
-  },220);
+    showToast('Switched to '+p.name);
+    setTimeout(()=>{busy=false;},350);
+  },200);
 }
 
-function handleLink(e,name){
+function openLink(e,name){
   e.preventDefault();
-  toast('Opening '+name+'...');
+  showToast('Opening '+name+'...');
 }
 
-let toastTimer;
-function toast(msg){
+let tt;
+function showToast(msg){
   const t=document.getElementById('toast');
-  clearTimeout(toastTimer);
-  t.textContent=msg;
-  t.classList.add('show');
-  toastTimer=setTimeout(()=>t.classList.remove('show'),2000);
+  clearTimeout(tt);
+  t.textContent=msg;t.classList.add('on');
+  tt=setTimeout(()=>t.classList.remove('on'),2200);
 }
 
-document.addEventListener('contextmenu',e=>{e.preventDefault();toast('Protected ✦');});
+document.addEventListener('contextmenu',e=>{e.preventDefault();showToast('Protected ✦');});
 document.addEventListener('keydown',e=>{
-  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&'IJC'.includes(e.key))||(e.ctrlKey&&e.key==='u')){
-    e.preventDefault();toast('Not allowed here ✦');
+  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&'IJC'.includes(e.key))||(e.ctrlKey&&['u','U'].includes(e.key))){
+    e.preventDefault();showToast('Not allowed here ✦');
   }
 });
 document.addEventListener('selectstart',e=>e.preventDefault());
